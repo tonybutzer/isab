@@ -1,0 +1,2 @@
+publish:
+	(cd ..; ./gitpush.sh)
