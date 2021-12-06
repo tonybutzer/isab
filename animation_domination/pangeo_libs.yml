@@ -1,0 +1,46 @@
+channels:
+  - conda-forge
+dependencies:
+  - python=3
+#holoviz
+  - hvplot
+  - geoviews
+  - datashader
+  - fastparquet
+  - python-snappy
+#jupyter
+  - jupyterlab
+  - jupyter-server-proxy
+  - jupyter_core
+  - jupyter_server
+  - widgetsnbextension
+  - dask-labextension
+  - nodejs
+  - notebook=6.4.0
+  - nbclassic=0.3.1
+  - nbclient=0.5.3
+#xarray-related
+  - xarray
+  - intake-xarray
+  - dask
+    #- dask distributed
+  - dask-jobqueue
+  - zarr
+  - h5netcdf
+  - rechunker
+  - xesmf
+  - rioxarray
+#other 
+  - fsspec
+  - s3fs
+  - erddapy
+  - xmltodict
+  - folium
+#aws
+  - boto3
+#ODC
+  - datacube
+  - odc-stac
+# animations
+  - scikit-learn
+  - fiona
