@@ -105,3 +105,21 @@ def nc_from_ds(DS, filename):
     #DS.SCL.attrs = {}
     ds1 = DS.drop(labels='spatial_ref')
     ds1.to_netcdf(filename)
+
+
+
+
+import sys
+
+sys.path.append('.')
+
+import rioxarray
+from nb_animate import nb_animated_timeseries
+
+
+def make_animated_gif(nc_file, gif_file):
+
+    rds = rioxarray.open_rasterio(nc_file)
+
+    nb_animated_timeseries(rds,output_path=gif_file, bands = ['B04', 'B03', 'B02'], time_dim='time',  
+      percentile_stretch=(.2,.85), interval=1200)
