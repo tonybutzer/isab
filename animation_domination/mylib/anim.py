@@ -46,17 +46,62 @@ def get_stac_records(geom):
     # Create GeoDataFrame from resulting Items
     #items_gdf = items_to_geodataframe(items_dict)
     item_collection = ItemCollection(items_dict)
-    
-
 
     items_dict_pruned = []
     cnt=0
     for my_item in items_dict:
-        print(cnt)
-        cnt=cnt+1
+        #print(cnt)
+        #cnt=cnt+1
         if int(my_item['properties']['sentinel:data_coverage']) > 88:
             # print(my_item['assets']['B03']['proj:shape'][0])
             print(my_item['properties']['sentinel:data_coverage'])
             items_dict_pruned.append(my_item)
 
     return(items_dict_pruned)
+
+
+import yaml
+
+from odc import stac
+from pyproj import CRS
+from pystac.extensions.projection import ProjectionExtension
+
+def open_odc(items, crs=None, resolution=None):
+    configuration_str = """---
+        landsat-c2l2-sr:
+          measurements:
+            '*':
+              dtype: float32
+              nodata: 0
+              units: 'm'
+        """
+    configuration = yaml.load(configuration_str, Loader=yaml.CSafeLoader)
+    datasets = list(stac.stac2ds(items, configuration))
+    
+#     proj = ProjectionExtension.ext(items[0])
+#     if crs is None:
+#         crs = CRS.from_epsg(proj.epsg)
+#     if resolution is None:
+#         resolution = (proj.transform[4], proj.transform[0])
+
+
+    resolution=(-10, 10)
+    data = stac.dc_load(datasets, bands=['B04', 'B03', 'B02', 'B09'], chunks={"x": 1024, "y": 1024}, output_crs="EPSG:32614", resolution=resolution)
+    #data = stac.dc_load(datasets, output_crs=crs, resolution=resolution)
+    return data
+
+
+import rioxarray
+
+def dc(geom, items_dict_pruned):
+    pruned_item_collection = ItemCollection(items_dict_pruned)
+    _datacube = open_odc(pruned_item_collection)
+    datacube = _datacube.rio.clip([geom], crs='epsg:4326')
+    return(datacube)
+
+
+def nc_from_ds(DS, filename):
+    DS.time.attrs = {}  #this allowed the nc to be written
+    #DS.SCL.attrs = {}
+    ds1 = DS.drop(labels='spatial_ref')
+    ds1.to_netcdf(filename)
