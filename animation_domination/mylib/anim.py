@@ -46,3 +46,17 @@ def get_stac_records(geom):
     # Create GeoDataFrame from resulting Items
     #items_gdf = items_to_geodataframe(items_dict)
     item_collection = ItemCollection(items_dict)
+    
+
+
+    items_dict_pruned = []
+    cnt=0
+    for my_item in items_dict:
+        print(cnt)
+        cnt=cnt+1
+        if int(my_item['properties']['sentinel:data_coverage']) > 88:
+            # print(my_item['assets']['B03']['proj:shape'][0])
+            print(my_item['properties']['sentinel:data_coverage'])
+            items_dict_pruned.append(my_item)
+
+    return(items_dict_pruned)
