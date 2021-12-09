@@ -11,6 +11,9 @@ from anim import *
 
 aoi_filename_geojson = "./siouxfalls2.geojson"
 
+if sys.argv[1:]:
+   aoi_filename_geojson = sys.argv[1]
+
 nc_filename = aoi_filename_geojson.replace('.geojson', '.nc')
 make_netcdf(aoi_filename_geojson, nc_filename)
 
