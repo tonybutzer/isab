@@ -2,9 +2,9 @@ from tbutzer/base-miniconda-pangeo
 
 #run conda install scikit-image
 
-run mkdir /home/lib
+run mkdir /home/mylib
 copy *.py /home/
 copy *.geojson /home/
-copy ./lib/ /home/lib/
+copy ./mylib/ /home/mylib/
 
 workdir /home

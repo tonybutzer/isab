@@ -41,7 +41,7 @@ dependencies:
 #ODC
   - datacube
   - odc-stac
-  - pystac-client
+  - pystac-client=0.3.0
 # animations
   - scikit-image
   - fiona

@@ -78,6 +78,10 @@ def open_odc(items, crs=None, resolution=None):
     configuration = yaml.load(configuration_str, Loader=yaml.CSafeLoader)
     datasets = list(stac.stac2ds(items, configuration))
     
+    # print(type(items[0]))
+    # print(dir(items[0].properties))
+    crs_str = str(items[0].properties['proj:epsg'])
+    crs = f'EPSG:{crs_str}'
 #     proj = ProjectionExtension.ext(items[0])
 #     if crs is None:
 #         crs = CRS.from_epsg(proj.epsg)
@@ -86,7 +90,7 @@ def open_odc(items, crs=None, resolution=None):
 
 
     resolution=(-10, 10)
-    data = stac.dc_load(datasets, bands=['B04', 'B03', 'B02', 'B09'], chunks={"x": 1024, "y": 1024}, output_crs="EPSG:32614", resolution=resolution)
+    data = stac.dc_load(datasets, bands=['B04', 'B03', 'B02', 'B09'], chunks={"x": 1024, "y": 1024}, output_crs=crs, resolution=resolution)
     #data = stac.dc_load(datasets, output_crs=crs, resolution=resolution)
     return data
 
@@ -123,3 +127,11 @@ def make_animated_gif(nc_file, gif_file):
 
     nb_animated_timeseries(rds,output_path=gif_file, bands = ['B04', 'B03', 'B02'], time_dim='time',  
       percentile_stretch=(.2,.85), interval=1200)
+
+
+
+def make_netcdf(aoi_filename_geojson, nc_filename):
+    geom = make_geom(aoi_filename_geojson)
+    items = get_stac_records(geom)
+    ds = dc(geom,items)
+    nc_from_ds(ds, nc_filename)
